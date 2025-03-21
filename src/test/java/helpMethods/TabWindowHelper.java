@@ -22,5 +22,9 @@ public class TabWindowHelper {
     public void closeCurrentTabWindow(){
        driver.close();
     }
+
+    public WebDriver.TargetLocator switchTo() {
+        return null;
+    }
     //inchide ferestrele
 }

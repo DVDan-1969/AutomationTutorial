@@ -13,6 +13,7 @@ import sharedData.SharedData;
 import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -75,18 +76,24 @@ public class PracticeFormTest extends SharedData {
         subjects.add("Maths");
         subjects.add("Arts");
         subjects.add("Biology");
+        subjects.add("Chemistry");
+
         for (int index = 0; index < subjects.size(); index++) {
-            subjectsElement.sendKeys(subjects.get(index));
-            subjectsElement.sendKeys(Keys.ENTER);
-            elementHelper.fillPressLocator(subjectsElement,subjects.get(index),Keys.ENTER);
+
+
+         elementHelper.fillPressLocator(subjectsElement,subjects.get(index),Keys.ENTER);
         }
         List<String> hobbies = new ArrayList<>();
         hobbies.add("Sports");
         hobbies.add("Music");
+        hobbies.add("Reading");
 
         List<WebElement> hobbiesOptionsList = driver.findElements(By.xpath("//div[@id='hobbiesWrapper']//label"));
         for (int index = 0; index < hobbiesOptionsList.size(); index++) {
             String currentText = hobbiesOptionsList.get(index).getText();
+            if (hobbies.contains(currentText)){
+             elementHelper.clickJSLocator(hobbiesOptionsList.get(index));
+            }
         }
         By pictureElement = By.id("uploadPicture");
         File file = new File("src/test/resources/8ek76goi.png");
@@ -100,45 +107,68 @@ public class PracticeFormTest extends SharedData {
         elementHelper.clickJSLocator(stateElement);
 
         By stateInputElement = By.id("react-select-3-input");
-        String stateValue = "NCR";
-       elementHelper.fillPressLocator(stateInputElement,stateValue,Keys.ENTER);
+        String stateInputValue = "NCR";
+       elementHelper.fillPressLocator(stateInputElement,stateInputValue,Keys.ENTER);
 
         By cityElement = By.xpath("//div[text()='Select City']");
         elementHelper.clickJSLocator(cityElement);
 
         By cityInputElement = By.id("react-select-4-input");
-        String cityValue="Delhi";
-        elementHelper.fillPressLocator(cityInputElement,cityValue,Keys.ENTER);
+        String cityInputValue="Delhi";
+        elementHelper.fillPressLocator(cityInputElement,cityInputValue,Keys.ENTER);
 
-        By submitButtonElement = By.id("submit");
-        elementHelper.clickLocator(submitButtonElement);
+        By submitElement = By.id("submit");
+        elementHelper.clickJSLocator(submitElement);
         //Validari
 
         WebDriverWait wait=new WebDriverWait(driver,Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("example-modal-sizes-title-lg")));
+
         WebElement thankYouElement= driver.findElement(By.id("example-modal-sizes-title-lg"));
         String expectedMessage="Thanks for submitting the form";
-        String actualMessage= thankYouElement.getText();
+        String actualMessage =thankYouElement.getText();
         Assert.assertEquals(actualMessage,expectedMessage);
+      System.out.println("Testul a fost validat");
 
-        List<WebElement> rowsList=driver.findElements(By.xpath("//tbody/tr"));
-        Assert.assertTrue(rowsList.get(0).getText().contains("Student Name"));
-        Assert.assertTrue(rowsList.get(0).getText().contains(firstNameValue));
-        Assert.assertTrue(rowsList.get(0).getText().contains(lastNameValue));
 
-        Assert.assertTrue(rowsList.get(1).getText().contains("Student Email"));
-        Assert.assertTrue(rowsList.get(1).getText().contains(emailValue));
+        By tablesRowsListElement=By.xpath("//tbody/tr");
+        List<WebElement> tablesRowsList=driver.findElements(tablesRowsListElement);
+        elementHelper.validateTextContainsElement(tablesRowsList.get(0),"Student Name");
+        elementHelper.validateTextContainsElement(tablesRowsList.get(0), firstNameValue);
+        elementHelper.validateTextContainsElement(tablesRowsList.get(0), lastNameValue);
 
-        Assert.assertTrue(rowsList.get(2).getText().contains("Gender"));
-        Assert.assertTrue(rowsList.get(2).getText().contains(genderValue));
 
+     elementHelper.validateTextContainsElement(tablesRowsList.get(1),"Student Email");
+     elementHelper.validateTextContainsElement(tablesRowsList.get(1),emailValue);
+
+     elementHelper.validateTextContainsElement(tablesRowsList.get(2),"Gender");
+     elementHelper.validateTextContainsElement(tablesRowsList.get(2),genderValue);
+
+     elementHelper.validateTextContainsElement(tablesRowsList.get(3),"Mobile");
+     elementHelper.validateTextContainsElement(tablesRowsList.get(3),mobilPhoneValue);
 
         String subjectsStringValue = String.join( ", ", subjects);
-        Assert.assertTrue(rowsList.get(5).getText().contains("Subjects"));
-        System.out.println(rowsList.get(5).getText());
-        System.out.println(subjectsStringValue);
-        Assert.assertTrue(rowsList.get(5).getText().contains(subjectsStringValue));
+     elementHelper.validateTextContainsElement(tablesRowsList.get(5),"Subjects");
+     elementHelper.validateTextContainsElement(tablesRowsList.get(5),"Maths");
+     elementHelper.validateTextContainsElement(tablesRowsList.get(5),"Arts");
+     elementHelper.validateTextContainsElement(tablesRowsList.get(5),"Biology");
+     elementHelper.validateTextContainsElement(tablesRowsList.get(5),"Chemistry");
 
+     elementHelper.validateTextContainsElement(tablesRowsList.get(6),"Hobbies");
+     elementHelper.validateTextContainsElement(tablesRowsList.get(6),"Sports");
+     elementHelper.validateTextContainsElement(tablesRowsList.get(6),"Reading");
+
+
+     elementHelper.validateTextContainsElement(tablesRowsList.get(7),"Picture");
+    // elementHelper.validateTextContainsElement(tablesRowsList.get(7),"src/test/resources/8ek76goi.png");
+
+
+        elementHelper.validateTextContainsElement(tablesRowsList.get(8),"Address");
+     elementHelper.validateTextContainsElement(tablesRowsList.get(8),currentAddressValue);
+
+     elementHelper.validateTextContainsElement(tablesRowsList.get(9),"State and City");
+     elementHelper.validateTextContainsElement(tablesRowsList.get(9),stateInputValue);
+     elementHelper.validateTextContainsElement(tablesRowsList.get(9),cityInputValue);
 
 
     }
